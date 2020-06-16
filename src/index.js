@@ -11,13 +11,13 @@ function processData(data)
 	for(var key of Object.keys(data))
 	{
 		data1.push([
-			Date.UTC(key.split('-')[0],key.split('-')[1],key.split('-')[2]),
+			Date.UTC(parseInt(key.split('-')[0]),parseInt(key.split('-')[1])-1,parseInt(key.split('-')[2])),
 			parseFloat(data[key]["1. open"]),
 			parseFloat(data[key]["2. high"]),
 			parseFloat(data[key]["3. low"]),
 			parseFloat(data[key]["4. close"]),
 			])
-		data2.push([Date.UTC(key.split('-')[0],key.split('-')[1],key.split('-')[2]),parseFloat(data[key]["5. volume"])])
+		data2.push([Date.UTC(parseInt(key.split('-')[0]),parseInt(key.split('-')[1])-1,parseInt(key.split('-')[2])),parseFloat(data[key]["5. volume"])])
 	}
 	return[data1,data2]
 }
@@ -25,6 +25,9 @@ function processData(data)
 function returnOptions(data_list,key)
 {
 	return {
+			title: {
+    				text: key
+  			},
 			yAxis: [{
             		labels: {
                 			align: 'left'
@@ -102,9 +105,12 @@ function returnOptions(data_list,key)
 		};
 }
 
-function returnApp(options)
+function returnApp(options,ver=0)
 {
-	const App = () => (
+	 var App;
+	if (ver === 0)
+	{
+		App = () => (
  			 <div>
 					<select onChange={ () => store.dispatch({type: document.getElementById('type').value}) } style={{width: '96%'}} id='type' value={store.getState()}>
 						<option value='IBM'>IBM</option>
@@ -129,6 +135,19 @@ function returnApp(options)
     				/>
   			</div>
 			);
+	}
+	else
+	{
+			App = () => (
+ 			 <div>
+    			<HighchartsReact
+      				highcharts={Highcharts}
+      				constructorType={'stockChart'}
+      				options={options}
+    			/>
+  			</div>
+			);
+	}
 	return App;
 }
 
@@ -145,6 +164,13 @@ const reducer = (state,action) => {
 	state = action.type;
 	return state;
 };
+
+fetch("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=NFTY&apikey=WCQOTPTPY8V3GALU")
+		.then(response => response.json())
+		.then(data => processData(data["Time Series (Daily)"]))
+		.then(data_list => returnOptions(data_list,'NIFTY'))
+		.then(options =>	returnApp(options,1))
+		.then(App => render(<App />, document.getElementById('nifty')))
 
 const store = createStore(reducer,{type:''})
 store.dispatch({type: 'IBM'})
