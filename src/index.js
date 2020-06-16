@@ -11,13 +11,13 @@ function processData(data)
 	for(var key of Object.keys(data))
 	{
 		data1.push([
-			key,
+			Date.UTC(key.split('-')[0],key.split('-')[1],key.split('-')[2]),
 			parseFloat(data[key]["1. open"]),
 			parseFloat(data[key]["2. high"]),
 			parseFloat(data[key]["3. low"]),
 			parseFloat(data[key]["4. close"]),
 			])
-		data2.push([key,parseFloat(data[key]["5. volume"])])
+		data2.push([Date.UTC(key.split('-')[0],key.split('-')[1],key.split('-')[2]),parseFloat(data[key]["5. volume"])])
 	}
 	return[data1,data2]
 }
