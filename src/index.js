@@ -31,18 +31,9 @@ function returnOptions(data_list,key)
 {
 	return {
 			title: {
-    				text: key
+    				text: 'My Stock Chart'
   			},
 			yAxis: [{
-					startOnTick: false,
-            		endOnTick: false,
-            		labels: {
-                		align: 'right',
-                		x: -3
-            				},
-            		title: {
-                		text: 'OHLC'
-            		},
 					height: '60%',
             		lineWidth: 2,
             		resize: {
@@ -50,49 +41,23 @@ function returnOptions(data_list,key)
             				}
         			}, 
 					{
-						labels: {
-                				align: 'right',
-                				x: -3
-            				},
-            			title: {
-                			text: 'Volume'
-            					},
             			top: '65%',
             			height: '35%',
             			offset: 0,
             			lineWidth: 2
-        			}],
+        			},
+					{
+            			top: '65%',
+            			height: '35%',
+            			offset: 0,
+            			lineWidth: 2
+        			}
+					],
 			 tooltip: {
-            			shape: 'square',
-            			headerShape: 'callout',
-            			borderWidth: 0,
-            			shadow: false,
-            			positioner: function (width, height, point) {
-                			var chart = this.chart,
-                    		position;
-
-                			if (point.isHeader) {
-                    			position = {
-                        			x: Math.max(
-                            		// Left side limit
-                            		chart.plotLeft,
-                            		Math.min(
-                                		point.plotX + chart.plotLeft - width / 2,
-                                		// Right side limit
-                                		chart.chartWidth - width - chart.marginRight
-                            			)
-                        				),
-                        			y: point.plotY
-                    				};
-                			} 
-							else {
-                    			position = {
-                        			x: point.series.chart.plotLeft,
-                        			y: point.series.yAxis.top - chart.plotTop
-                    						};
-                				}
-                			return position;
-            				}
+            			backgroundColor: '#FCFFC5',
+    					borderColor: 'black',
+    					borderRadius: 10,
+    					borderWidth: 1
         				},
 			series: [
 					{
@@ -119,7 +84,7 @@ function returnOptions(data_list,key)
 						id: 'volume-NIFTY',
 						name: `NIFTY-volume`,
 						data: data_list[3],
-						yAxis: 1
+						yAxis: 2
 					}
 				],
 			responsive: {
