@@ -45,19 +45,16 @@ function returnOptions(data_list,key)
             			height: '35%',
             			offset: 0,
             			lineWidth: 2
-        			},
-					{
-            			top: '65%',
-            			height: '35%',
-            			offset: 0,
-            			lineWidth: 2
         			}
 					],
 			 tooltip: {
-            			backgroundColor: '#FCFFC5',
-    					borderColor: 'black',
+						useHTML: true,
     					borderRadius: 10,
-    					borderWidth: 1
+						headerFormat: '<table>',
+						pointFormat: '<tr><td style="color: {series.color}">{series.name}: </td>' +
+            							  '<td style="text-align: right"><b>{point.y}</b><br>{point.key}</td></tr>',
+						footerFormat: '</table>',
+        				valueDecimals: 2
         				},
 			series: [
 					{
@@ -84,7 +81,7 @@ function returnOptions(data_list,key)
 						id: 'volume-NIFTY',
 						name: `NIFTY-volume`,
 						data: data_list[3],
-						yAxis: 2
+						yAxis: 1
 					}
 				],
 			responsive: {
