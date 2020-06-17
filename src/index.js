@@ -22,6 +22,11 @@ function processData(data)
 	return[data1,data2]
 }
 
+function getData(data)
+{
+	return fetch("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=NFTY&apikey=WCQOTPTPY8V3GALU").then(response => response.json()).then(new_data => processData(new_data["Time Series (Daily)"])).then(data_list => [...processData(data),...data_list])
+}
+
 function returnOptions(data_list,key)
 {
 	return {
@@ -29,21 +34,33 @@ function returnOptions(data_list,key)
     				text: key
   			},
 			yAxis: [{
+					startOnTick: false,
+            		endOnTick: false,
             		labels: {
-                			align: 'left'
+                		align: 'right',
+                		x: -3
             				},
-            		height: '80%',
+            		title: {
+                		text: 'OHLC'
+            		},
+					height: '60%',
+            		lineWidth: 2,
             		resize: {
-                			enabled: true
+                		enabled: true
             				}
         			}, 
 					{
-            			labels: {
-                		align: 'left'
+						labels: {
+                				align: 'right',
+                				x: -3
+            				},
+            			title: {
+                			text: 'Volume'
             					},
-            			top: '80%',
-           				height: '20%',
-            			offset: 0
+            			top: '65%',
+            			height: '35%',
+            			offset: 0,
+            			lineWidth: 2
         			}],
 			 tooltip: {
             			shape: 'square',
@@ -85,10 +102,23 @@ function returnOptions(data_list,key)
 						data: data_list[0]
 					},
 					{
+						type: 'ohlc',
+						id: 'ohlc-NIFTY',
+						name: `NIFTY-ohlc`,
+						data: data_list[2]
+					},
+					{
 						type: 'column',
 						id: 'volume-dy',
 						name: `${key}-volume`,
 						data: data_list[1],
+						yAxis: 1
+					},
+					{
+						type: 'column',
+						id: 'volume-NIFTY',
+						name: `NIFTY-volume`,
+						data: data_list[3],
 						yAxis: 1
 					}
 				],
@@ -156,21 +186,15 @@ const reducer = (state,action) => {
 	{
 		fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${action.type}&apikey=WCQOTPTPY8V3GALU`)
 		.then(response => response.json())
-		.then(data => processData(data["Time Series (Daily)"]))
-		.then(data_list => returnOptions(data_list,action.type))
-		.then(options =>	returnApp(options))
+		.then(data => getData(data["Time Series (Daily)"]))
+		.then(comb_data => returnOptions(comb_data,action.type))
+		.then(options => returnApp(options))
 		.then(App => render(<App />, document.getElementById('root')))
 	}
 	state = action.type;
 	return state;
 };
 
-fetch("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=NFTY&apikey=WCQOTPTPY8V3GALU")
-		.then(response => response.json())
-		.then(data => processData(data["Time Series (Daily)"]))
-		.then(data_list => returnOptions(data_list,'NIFTY'))
-		.then(options =>	returnApp(options,1))
-		.then(App => render(<App />, document.getElementById('nifty')))
 
 const store = createStore(reducer,{type:''})
 store.dispatch({type: 'IBM'})
