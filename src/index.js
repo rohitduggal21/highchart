@@ -8,6 +8,8 @@ function processData(data)
 {
 	var data1 = [];
 	var data2 = [];
+	if (data)
+	{
 	for(var key of Object.keys(data))
 	{
 		data1.push([
@@ -18,6 +20,11 @@ function processData(data)
 			parseFloat(data[key]["4. close"]),
 			])
 		data2.push([Date.UTC(parseInt(key.split('-')[0]),parseInt(key.split('-')[1])-1,parseInt(key.split('-')[2])),parseFloat(data[key]["5. volume"])])
+	}
+	}
+	else
+	{
+		alert("Data fetch failed.\nTry Again after some time..");
 	}
 	return[data1,data2]
 }
